@@ -5,7 +5,7 @@
     <groupId>io.github.jzdayz</groupId>
     <artifactId>light-projects</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.3-SNAPSHOT</version>
+    <version>2.0.3</version>
 
     <name>light projects</name>
     <url>https://github.com/</url>
@@ -62,7 +62,7 @@
         <url>https://github.com/jzdayz</url>
         <connection>scm:git:https://github.com/jzdayz/light-projects.git</connection>
         <developerConnection>scm:git:https://github.com/jzdayz/light-projects</developerConnection>
-      <tag>HEAD</tag>
+      <tag>light-projects-2.0.3</tag>
   </scm>
 
     <dependencyManagement>
