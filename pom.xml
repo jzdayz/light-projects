@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.jzdayz</groupId>
+    <artifactId>light-projects</artifactId>
+    <packaging>pom</packaging>
+    <version>2.0.0-SNAPSHOT</version>
+
+    <name>light projects</name>
+    <url>https://github.com/</url>
+    <description>light projects</description>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>huqingfeng</name>
+            <email>1397649957@qq.com</email>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>light-rpc</module>
+        <module>light-rpc-spring-boot</module>
+        <module>light-rpc-example</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <!--base-->
+        <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
+        <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+
+        <netty>4.1.43.Final</netty>
+        <lombok>1.18.10</lombok>
+        <slf4j>1.7.29</slf4j>
+        <log4j>1.7.29</log4j>
+        <fastjson>1.2.62</fastjson>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <!--spring-->
+        <spring.boot.version>2.2.2.RELEASE</spring.boot.version>
+    </properties>
+
+    <scm>
+        <url>https://github.com/jzdayz</url>
+        <connection>scm:git:https://github.com/jzdayz/light-projects.git</connection>
+        <developerConnection>scm:git:https://github.com/jzdayz/light-projects</developerConnection>
+      <tag>HEAD</tag>
+  </scm>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${log4j}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>oss</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <!--发送到暂存仓库之后，自动close并且release-->
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <preparationGoals>clean verify</preparationGoals>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
+            </url>
+        </repository>
+    </distributionManagement>
+
+    <profiles>
+        <!-- GPG Signature on release -->
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
