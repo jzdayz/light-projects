@@ -23,8 +23,8 @@ public class Request {
 
     /**
      *  len + headerLen + header + body
-     * @param byteBuf
-     * @return
+     * @param byteBuf 字节
+     * @return request
      */
     public static Request decode(ByteBuf byteBuf){
         int len = byteBuf.readInt();

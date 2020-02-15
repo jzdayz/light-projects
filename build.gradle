@@ -4,7 +4,7 @@
 
 allprojects {
     group = 'io.github.jzdayz'
-    version = '3.1.0'
+    version = '4.0.2'
 }
 
 subprojects {
@@ -45,8 +45,8 @@ subprojects {
                     }
                 }
                 pom {
-                    name = 'gradle test'
-                    description = 'gradle test desc'
+                    name = 'light-projects'
+                    description = 'light-projects'
                     url = 'https://github.com/jzdayz/light-projects'
                     licenses {
                         license {
@@ -84,11 +84,5 @@ subprojects {
 
     tasks.withType(JavaCompile) {
         options.encoding = 'utf-8'
-    }
-
-    javadoc {
-        if(JavaVersion.current().isJava9Compatible()) {
-            options.addBooleanOption('html5', true)
-        }
     }
 }

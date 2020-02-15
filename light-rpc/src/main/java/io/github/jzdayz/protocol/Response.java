@@ -23,8 +23,8 @@ public class Response {
 
     /**
      *  len + headerLen + header + body
-     * @param byteBuf
-     * @return
+     * @param byteBuf 字节
+     * @return response
      */
     public static Response decode(ByteBuf byteBuf){
         int len = byteBuf.readInt();
