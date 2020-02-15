@@ -4,7 +4,7 @@
 
 allprojects {
     group = 'io.github.jzdayz'
-    version = '4.0.2'
+    version = '2.1.0'
 }
 
 subprojects {
@@ -80,6 +80,10 @@ subprojects {
                 url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             }
         }
+    }
+
+    signing {
+        sign publishing.publications.mavenJava
     }
 
     tasks.withType(JavaCompile) {

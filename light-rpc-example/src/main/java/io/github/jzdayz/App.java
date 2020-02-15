@@ -12,7 +12,7 @@ public class App {
     public static void main(String[] args) throws InterruptedException {
         ConfigurableApplicationContext run = SpringApplication.run(App.class, args);
         Consumer bean = run.getBean(Consumer.class);
-        TimeUnit.MILLISECONDS.sleep(200L);
+        TimeUnit.MILLISECONDS.sleep(500L);
         System.out.println(bean.get());
         System.exit(1);
     }
