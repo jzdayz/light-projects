@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -26,8 +26,8 @@ public class RpcRegister {
         private Map<String, Method> methods;
     }
 
-    private Map<String,RBean> providerContainer = new HashMap<>(256);
-    private Map<String,Object> consumeContainer = new HashMap<>(256);
+    private Map<String,RBean> providerContainer = new ConcurrentHashMap<>(256);
+    private Map<String,Object> consumeContainer = new ConcurrentHashMap<>(256);
 
     public static final RpcRegister INSTANCE = new RpcRegister();
 
