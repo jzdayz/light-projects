@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 @Slf4j
 public class Server {
@@ -19,6 +20,8 @@ public class Server {
 
     private int port;
 
+    private final CountDownLatch countDownLatch = new CountDownLatch(1);
+
     public Server(int port) {
         this.port = port;
     }
@@ -26,6 +29,11 @@ public class Server {
     public void start(){
         channelHandlersSharable = Collections.singletonList(new ServerHandler());
         new Thread(this::start0).start();
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void start0(){
@@ -48,10 +56,12 @@ public class Server {
                     });
 
             ChannelFuture f = b.bind(port).sync();
+            countDownLatch.countDown();
+            log.info("Rpc Server Up !!!!!!");
             f.channel().closeFuture().sync();
         } catch (Exception e) {
-            log.error("server start",e);
-            System.exit(2);
+            log.error("server start error",e);
+            System.exit(1);
         } finally {
             // Shut down all event loops to terminate all threads.
             bossGroup.shutdownGracefully();
