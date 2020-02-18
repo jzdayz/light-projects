@@ -4,11 +4,11 @@
 
 allprojects {
     group = 'io.github.jzdayz'
-    version = '2.2.2'
+    version = '3.0.0'
 }
 
 subprojects {
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'signing'
     apply plugin: 'maven-publish'
 
@@ -88,6 +88,9 @@ subprojects {
     }
 
     tasks.withType(JavaCompile) {
+        options.encoding = 'utf-8'
+    }
+    tasks.withType(Javadoc) {
         options.encoding = 'utf-8'
     }
 }
