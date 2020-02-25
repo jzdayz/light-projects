@@ -16,7 +16,7 @@ public class LightRpcAutoConfiguration implements EnvironmentAware{
 
     private Environment environment;
 
-    @Bean
+    @Bean("light.rpc.client")
     public Client client(){
         return new Client(
                 environment.getProperty("rpc.provider.address","localhost"),
@@ -28,7 +28,7 @@ public class LightRpcAutoConfiguration implements EnvironmentAware{
         return new RpcBeanScannerConfigurer(beanFactory);
     }
 
-    @Bean
+    @Bean("light.rpc.server")
     public Server server(ApplicationContext applicationContext){
         Server server = new Server(Integer.parseInt(environment.getProperty("rpc.consume.int","20090")));
         server.start();
