@@ -16,27 +16,16 @@ import java.util.stream.Collectors;
 @Data
 public class RpcRegister {
 
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class RBean{
-        private String id;
-        private Object bean;
-        private Map<String, Method> methods;
-    }
-
-    private Map<String,RBean> providerContainer = new ConcurrentHashMap<>(256);
-    private Map<String,Object> consumeContainer = new ConcurrentHashMap<>(256);
-
     public static final RpcRegister INSTANCE = new RpcRegister();
+    private Map<String, RBean> providerContainer = new ConcurrentHashMap<>(256);
+    private Map<String, Object> consumeContainer = new ConcurrentHashMap<>(256);
 
-    public void registerProvider(Object object){
-        registerProvider(object,object.getClass().getName());
+    public void registerProvider(Object object) {
+        registerProvider(object, object.getClass().getName());
     }
 
-    public void registerProvider(Object object,String id){
-        if(id == null || id.length() == 0){
+    public void registerProvider(Object object, String id) {
+        if (id == null || id.length() == 0) {
             registerProvider(object);
         }
         Map<String, Method> maps = Arrays
@@ -50,15 +39,25 @@ public class RpcRegister {
                     return false;
                 })
                 .collect(Collectors.toMap(Method::getName, Function.identity()));
-        RpcRegister.INSTANCE.providerContainer.put(id,RBean.builder().id(id).methods(maps).bean(object).build());
+        RpcRegister.INSTANCE.providerContainer.put(id, RBean.builder().id(id).methods(maps).bean(object).build());
     }
 
-    public Object registerConsume(Object object,String id){
-        if (id == null || id.length() == 0){
+    public Object registerConsume(Object object, String id) {
+        if (id == null || id.length() == 0) {
             id = object.getClass().getName();
         }
-        consumeContainer.put(id,object);
+        consumeContainer.put(id, object);
         return object;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RBean {
+        private String id;
+        private Object bean;
+        private Map<String, Method> methods;
     }
 
 }

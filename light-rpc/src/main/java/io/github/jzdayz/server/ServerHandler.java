@@ -26,10 +26,10 @@ public class ServerHandler extends SimpleChannelInboundHandler<Request> {
     private final AtomicInteger id = new AtomicInteger();
 
     private ExecutorService workPool = new ThreadPoolExecutor(
-            10,50,60_000, TimeUnit.MILLISECONDS,new ArrayBlockingQueue<>(1000),
-            (r)->{
+            10, 50, 60_000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(1000),
+            (r) -> {
                 Thread thread = new Thread(r);
-                thread.setName(String.format("Work-Thread-%s",id.incrementAndGet()));
+                thread.setName(String.format("Work-Thread-%s", id.incrementAndGet()));
                 return thread;
             }
     );
@@ -37,7 +37,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Request> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Request res) throws Exception {
-        workPool.submit(()->{
+        workPool.submit(() -> {
             String id = res.getHeader().get(Constant.Header.ID);
             String method = res.getHeader().get(Constant.Header.METHOD);
             String uuid = res.getHeader().get(Constant.Header.UUID);
@@ -45,13 +45,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<Request> {
             try {
                 Object result = RpcManager.invoke(id, method, ArgsUtil.decode(args));
                 byte[] bytes = JSON.toJSONBytes(result);
-                Map<String,String> head = new HashMap<>();
-                head.put(Constant.Header.UUID,uuid);
+                Map<String, String> head = new HashMap<>();
+                head.put(Constant.Header.UUID, uuid);
                 Response response = Response.builder().header(Header.builder().map(head).build()).body(bytes).build();
                 byte[] resBytes = Response.encode(response);
                 ctx.writeAndFlush(ctx.alloc().buffer(resBytes.length).writeBytes(resBytes));
-            }catch (Exception e){
-                log.error("error",e);
+            } catch (Exception e) {
+                log.error("error", e);
             }
         });
     }

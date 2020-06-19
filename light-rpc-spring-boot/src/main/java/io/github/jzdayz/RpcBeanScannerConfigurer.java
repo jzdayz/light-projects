@@ -28,7 +28,7 @@ public class RpcBeanScannerConfigurer implements BeanDefinitionRegistryPostProce
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        ClassPathRpcScanner scanner = new ClassPathRpcScanner(registry,beanFactory.getBean(Client.class));
+        ClassPathRpcScanner scanner = new ClassPathRpcScanner(registry, beanFactory.getBean(Client.class));
         scanner.addIncludeFilter(new AnnotationTypeFilter(RpcClient.class));
         scanner.scan(AutoConfigurationPackages.get(this.beanFactory).toArray(new String[0]));
     }
@@ -38,7 +38,7 @@ public class RpcBeanScannerConfigurer implements BeanDefinitionRegistryPostProce
 
     }
 
-    public static class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
+    public static class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner {
 
         private Client client;
 
@@ -50,7 +50,7 @@ public class RpcBeanScannerConfigurer implements BeanDefinitionRegistryPostProce
         @Override
         protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
             Set<BeanDefinitionHolder> beanDefinitionHolders = super.doScan(basePackages);
-            if (beanDefinitionHolders.size()>0){
+            if (beanDefinitionHolders.size() > 0) {
                 processBeanDefinitions(beanDefinitionHolders);
             }
             return beanDefinitionHolders;
@@ -58,7 +58,7 @@ public class RpcBeanScannerConfigurer implements BeanDefinitionRegistryPostProce
 
         private void processBeanDefinitions(Set<BeanDefinitionHolder> beanDefinitionHolders) {
 
-            beanDefinitionHolders.forEach(beanDefinitionHolder->{
+            beanDefinitionHolders.forEach(beanDefinitionHolder -> {
                 GenericBeanDefinition definition = (GenericBeanDefinition) beanDefinitionHolder.getBeanDefinition();
                 String beanClass = definition.getBeanClassName();
                 definition.setBeanClass(LightRpcBeanFactory.class);

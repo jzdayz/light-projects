@@ -2,6 +2,7 @@ package io.github.jzdayz.client;
 
 import com.alibaba.fastjson.JSON;
 import io.github.jzdayz.config.Configuration;
+import io.github.jzdayz.ex.TimeoutException;
 import io.github.jzdayz.protocol.Header;
 import io.github.jzdayz.protocol.Request;
 import io.github.jzdayz.protocol.Response;
@@ -26,47 +27,30 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.LockSupport;
 
 public class Client {
 
+    public static final ConcurrentHashMap<String, WaitResponseFuture> CMD = new ConcurrentHashMap<>(256);
     private Bootstrap bootstrap = null;
-
     private String address;
-
     private int port;
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class WaitResponseFuture{
-
-        private Response response;
-
-        private Thread waiter;
-
-    }
-
-    public static final ConcurrentHashMap<String,WaitResponseFuture> CMD = new ConcurrentHashMap<>(256);
-
-    private  EventLoopGroup work;
+    private EventLoopGroup work;
 
     public Client(String address, int port) {
         this.address = address;
         this.port = port;
     }
 
-    public <T> T rpc(String id, String method,Class<T> resType, Object... args) {
+    public <T> T rpc(String id, String method, Class<T> resType, Object... args) {
         ChannelFuture chanel = getChanel();
-        Map<String,String> header = new HashMap<>();
-        header.put(Constant.Header.ID,id);
-        header.put(Constant.Header.METHOD,method);
+        Map<String, String> header = new HashMap<>();
+        header.put(Constant.Header.ID, id);
+        header.put(Constant.Header.METHOD, method);
         String requestID = UUID.randomUUID().toString();
         header.put(Constant.Header.UUID, requestID);
         Request request = Request.builder().body("Hello!".getBytes(StandardCharsets.UTF_8)).header(Header.builder().map(header).build()).build();
-        if (args!=null && args.length>0) {
+        if (args != null && args.length > 0) {
             header.put(Constant.Header.ARGS, ArgsUtil.encode(args));
         }
         byte[] req = Request.encode(request);
@@ -78,9 +62,9 @@ public class Client {
         // 发送请求
         chanel.channel().writeAndFlush(buffer);
         // wait
-        LockSupport.parkNanos(Thread.currentThread(),TimeUnit.MILLISECONDS.toNanos(Configuration.getInstance().getClientHandlerTimeout()));
+        LockSupport.parkNanos(Thread.currentThread(), TimeUnit.MILLISECONDS.toNanos(Configuration.getInstance().getClientHandlerTimeout()));
         chanel.channel().close();
-        return JSON.parseObject(new String(Objects.requireNonNull(CMD.get(requestID),"no response").getResponse().getBody(),StandardCharsets.UTF_8),resType);
+        return JSON.parseObject(new String(Objects.requireNonNull(CMD.get(requestID), "no response").getResponse().getBody(), StandardCharsets.UTF_8), resType);
     }
 
     private ChannelFuture getChanel() {
@@ -103,19 +87,31 @@ public class Client {
         }
         ChannelFuture connect = bootstrap.connect(address, port);
         // 3s 链接超时
-        connect.awaitUninterruptibly(Configuration.getInstance().getClientConnectionTimeout(),TimeUnit.MILLISECONDS);
+        connect.awaitUninterruptibly(Configuration.getInstance().getClientConnectionTimeout(), TimeUnit.MILLISECONDS);
         if (connect.channel().isActive()) {
             return connect;
         }
-        throw new RuntimeException(new TimeoutException("timeout!!"));
+        throw new TimeoutException("timeout!!");
     }
 
-    public void close(){
+    public void close() {
         try {
             work.shutdownGracefully().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class WaitResponseFuture {
+
+        private Response response;
+
+        private Thread waiter;
+
     }
 
 }

@@ -12,28 +12,28 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 @Configuration
-public class LightRpcAutoConfiguration implements EnvironmentAware{
+public class LightRpcAutoConfiguration implements EnvironmentAware {
 
     private Environment environment;
 
     @Bean("light.rpc.client")
-    public Client client(){
+    public Client client() {
         return new Client(
-                environment.getProperty("rpc.provider.address","localhost"),
-                Integer.parseInt(environment.getProperty("rpc.provider.int","20090")));
+                environment.getProperty("rpc.provider.address", "localhost"),
+                Integer.parseInt(environment.getProperty("rpc.provider.int", "20090")));
     }
 
     @Bean
-    public RpcBeanScannerConfigurer rpcBeanScannerConfigurer(DefaultListableBeanFactory beanFactory){
+    public RpcBeanScannerConfigurer rpcBeanScannerConfigurer(DefaultListableBeanFactory beanFactory) {
         return new RpcBeanScannerConfigurer(beanFactory);
     }
 
     @Bean("light.rpc.server")
-    public Server server(ApplicationContext applicationContext){
-        Server server = new Server(Integer.parseInt(environment.getProperty("rpc.consume.int","20090")));
+    public Server server(ApplicationContext applicationContext) {
+        Server server = new Server(Integer.parseInt(environment.getProperty("rpc.consume.int", "20090")));
         server.start();
-        applicationContext.getBeansWithAnnotation(RpcProvider.class).values().forEach(bean->
-                RpcRegister.INSTANCE.registerProvider(bean,bean.getClass().getAnnotation(RpcProvider.class).value()));
+        applicationContext.getBeansWithAnnotation(RpcProvider.class).values().forEach(bean ->
+                RpcRegister.INSTANCE.registerProvider(bean, bean.getClass().getAnnotation(RpcProvider.class).value()));
         return server;
     }
 

@@ -14,13 +14,13 @@ import java.util.Map;
 @Builder
 public class Header {
 
-    private Map<String,String> map = new HashMap<>();
+    private Map<String, String> map = new HashMap<>();
 
-    public String get(String key){
+    public String get(String key) {
         return map.get(key);
     }
 
-    public String set(String key,String val){
-        return map.put(key,val);
+    public String set(String key, String val) {
+        return map.put(key, val);
     }
 }

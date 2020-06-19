@@ -27,7 +27,7 @@ public class ServerDecoder extends LengthFieldBasedFrameDecoder {
             }
             return Request.decode(frame);
         } catch (Exception e) {
-            log.error("decode",e);
+            log.error("decode", e);
             ctx.channel().close().addListener((ChannelFutureListener) future -> log.info("closeChannel"));
         } finally {
             if (null != frame) {

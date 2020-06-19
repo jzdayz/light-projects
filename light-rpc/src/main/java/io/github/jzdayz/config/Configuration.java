@@ -6,19 +6,16 @@ import lombok.Data;
 public class Configuration {
 
     private final static Configuration CONFIGURATION = new Configuration();
-
-    public static Configuration getInstance(){
-        return CONFIGURATION;
-    }
-
     private static final String PREFIX = "light.rpc.";
     private static final String CLIENT_CONNECTION_TIMEOUT = PREFIX + "connectionTimeout";
     private static final String CLIENT_HANDLER_TIMEOUT = PREFIX + "handlerTimeout";
-
     // ------------------------ client ------------------------
     private int clientConnectionTimeout = getPropertyInt(CLIENT_CONNECTION_TIMEOUT, 3000);
     private int clientHandlerTimeout = getPropertyInt(CLIENT_CONNECTION_TIMEOUT, 3000);
 
+    public static Configuration getInstance() {
+        return CONFIGURATION;
+    }
 
     private int getPropertyInt(String key, int defaultVal) {
         return Integer.parseInt(getPropertyString(key, String.valueOf(defaultVal)));

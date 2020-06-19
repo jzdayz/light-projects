@@ -21,8 +21,8 @@ public class LightRpcBeanFactory<T> implements FactoryBean<T> {
 
     @Override
     public T getObject() throws Exception {
-        return (T) RpcRegister.INSTANCE.getConsumeContainer().compute(rpcInterface.getName(),(key, oldVal)->{
-            if (oldVal == null){
+        return (T) RpcRegister.INSTANCE.getConsumeContainer().compute(rpcInterface.getName(), (key, oldVal) -> {
+            if (oldVal == null) {
                 RpcClient annotation = rpcInterface.getAnnotation(RpcClient.class);
                 Objects.requireNonNull(annotation);
                 Object proxyInstance = Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[]{rpcInterface}, (proxy, method, args) -> {
@@ -30,7 +30,7 @@ public class LightRpcBeanFactory<T> implements FactoryBean<T> {
                     Class<?> returnType = method.getReturnType();
                     return client.rpc(annotation.value(), name, returnType, args);
                 });
-                oldVal = RpcRegister.INSTANCE.registerConsume(proxyInstance,annotation.value());
+                oldVal = RpcRegister.INSTANCE.registerConsume(proxyInstance, annotation.value());
             }
             return oldVal;
         });
