@@ -73,8 +73,8 @@ subprojects {
         repositories {
             maven {
                 credentials {
-                    username nexusUsername
-                    password nexusPassword
+                    setUsername(project.findProperty('nexusUsername').toString())
+                    setPassword(project.findProperty('nexusPassword').toString())
                 }
                 def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
                 def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
@@ -93,4 +93,6 @@ subprojects {
     tasks.withType(Javadoc) {
         options.encoding = 'utf-8'
     }
+
+
 }
