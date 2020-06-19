@@ -30,10 +30,12 @@ public class LightRpcAutoConfiguration implements EnvironmentAware {
 
     @Bean("light.rpc.server")
     public Server server(ApplicationContext applicationContext) {
-        Server server = new Server(Integer.parseInt(environment.getProperty("rpc.consume.int", "20090")));
+        Server server = new Server(
+                Integer.parseInt(environment.getProperty("rpc.consume.int", "20090")));
         server.start();
         applicationContext.getBeansWithAnnotation(RpcProvider.class).values().forEach(bean ->
-                RpcRegister.INSTANCE.registerProvider(bean, bean.getClass().getAnnotation(RpcProvider.class).value()));
+                RpcRegister.INSTANCE
+                        .registerProvider(bean, bean.getClass().getAnnotation(RpcProvider.class).value()));
         return server;
     }
 

@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 
 @Slf4j
 public class RpcManager {
+
     public static Object invoke(String id, String methodName, Object... args) throws Exception {
         RpcRegister.RBean rBean = RpcRegister.INSTANCE.getProviderContainer().get(id);
         Method method = rBean.getMethods().get(methodName);

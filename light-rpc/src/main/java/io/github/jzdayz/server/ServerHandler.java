@@ -47,7 +47,8 @@ public class ServerHandler extends SimpleChannelInboundHandler<Request> {
                 byte[] bytes = JSON.toJSONBytes(result);
                 Map<String, String> head = new HashMap<>();
                 head.put(Constant.Header.UUID, uuid);
-                Response response = Response.builder().header(Header.builder().map(head).build()).body(bytes).build();
+                Response response = Response.builder().header(Header.builder().map(head).build())
+                        .body(bytes).build();
                 byte[] resBytes = Response.encode(response);
                 ctx.writeAndFlush(ctx.alloc().buffer(resBytes.length).writeBytes(resBytes));
             } catch (Exception e) {

@@ -31,7 +31,8 @@ import java.util.concurrent.locks.LockSupport;
 
 public class Client {
 
-    public static final ConcurrentHashMap<String, WaitResponseFuture> CMD = new ConcurrentHashMap<>(256);
+    public static final ConcurrentHashMap<String, WaitResponseFuture> CMD = new ConcurrentHashMap<>(
+            256);
     private Bootstrap bootstrap = null;
     private String address;
     private int port;
@@ -49,7 +50,8 @@ public class Client {
         header.put(Constant.Header.METHOD, method);
         String requestID = UUID.randomUUID().toString();
         header.put(Constant.Header.UUID, requestID);
-        Request request = Request.builder().body("Hello!".getBytes(StandardCharsets.UTF_8)).header(Header.builder().map(header).build()).build();
+        Request request = Request.builder().body("Hello!".getBytes(StandardCharsets.UTF_8))
+                .header(Header.builder().map(header).build()).build();
         if (args != null && args.length > 0) {
             header.put(Constant.Header.ARGS, ArgsUtil.encode(args));
         }
@@ -62,9 +64,12 @@ public class Client {
         // 发送请求
         chanel.channel().writeAndFlush(buffer);
         // wait
-        LockSupport.parkNanos(Thread.currentThread(), TimeUnit.MILLISECONDS.toNanos(Configuration.getInstance().getClientHandlerTimeout()));
+        LockSupport.parkNanos(Thread.currentThread(),
+                TimeUnit.MILLISECONDS.toNanos(Configuration.getInstance().getClientHandlerTimeout()));
         chanel.channel().close();
-        return JSON.parseObject(new String(Objects.requireNonNull(CMD.get(requestID), "no response").getResponse().getBody(), StandardCharsets.UTF_8), resType);
+        return JSON.parseObject(new String(
+                Objects.requireNonNull(CMD.get(requestID), "no response").getResponse().getBody(),
+                StandardCharsets.UTF_8), resType);
     }
 
     private ChannelFuture getChanel() {
@@ -87,7 +92,8 @@ public class Client {
         }
         ChannelFuture connect = bootstrap.connect(address, port);
         // 3s 链接超时
-        connect.awaitUninterruptibly(Configuration.getInstance().getClientConnectionTimeout(), TimeUnit.MILLISECONDS);
+        connect.awaitUninterruptibly(Configuration.getInstance().getClientConnectionTimeout(),
+                TimeUnit.MILLISECONDS);
         if (connect.channel().isActive()) {
             return connect;
         }

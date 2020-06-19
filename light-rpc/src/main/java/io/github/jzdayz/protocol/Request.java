@@ -31,8 +31,11 @@ public class Request {
         int len = byteBuf.readInt();
         int headerLen = byteBuf.readInt();
         ByteBuf headerBytes = byteBuf.readSlice(headerLen);
-        Header header = JSON.parseObject(new String(ByteBufUtil.getBytes(headerBytes), StandardCharsets.UTF_8), Header.class);
-        return Request.builder().header(header).body(ByteBufUtil.getBytes(byteBuf.readSlice(len - 4 - headerLen))).build();
+        Header header = JSON
+                .parseObject(new String(ByteBufUtil.getBytes(headerBytes), StandardCharsets.UTF_8),
+                        Header.class);
+        return Request.builder().header(header)
+                .body(ByteBufUtil.getBytes(byteBuf.readSlice(len - 4 - headerLen))).build();
     }
 
     @SuppressWarnings("DuplicatedCode")

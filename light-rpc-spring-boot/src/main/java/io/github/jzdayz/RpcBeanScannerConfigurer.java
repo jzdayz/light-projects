@@ -27,14 +27,17 @@ public class RpcBeanScannerConfigurer implements BeanDefinitionRegistryPostProce
     }
 
     @Override
-    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        ClassPathRpcScanner scanner = new ClassPathRpcScanner(registry, beanFactory.getBean(Client.class));
+    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
+            throws BeansException {
+        ClassPathRpcScanner scanner = new ClassPathRpcScanner(registry,
+                beanFactory.getBean(Client.class));
         scanner.addIncludeFilter(new AnnotationTypeFilter(RpcClient.class));
         scanner.scan(AutoConfigurationPackages.get(this.beanFactory).toArray(new String[0]));
     }
 
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
+            throws BeansException {
 
     }
 
@@ -59,7 +62,8 @@ public class RpcBeanScannerConfigurer implements BeanDefinitionRegistryPostProce
         private void processBeanDefinitions(Set<BeanDefinitionHolder> beanDefinitionHolders) {
 
             beanDefinitionHolders.forEach(beanDefinitionHolder -> {
-                GenericBeanDefinition definition = (GenericBeanDefinition) beanDefinitionHolder.getBeanDefinition();
+                GenericBeanDefinition definition = (GenericBeanDefinition) beanDefinitionHolder
+                        .getBeanDefinition();
                 String beanClass = definition.getBeanClassName();
                 definition.setBeanClass(LightRpcBeanFactory.class);
                 definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
@@ -71,7 +75,8 @@ public class RpcBeanScannerConfigurer implements BeanDefinitionRegistryPostProce
 
         @Override
         protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
-            return beanDefinition.getMetadata().isInterface() && beanDefinition.getMetadata().isIndependent();
+            return beanDefinition.getMetadata().isInterface() && beanDefinition.getMetadata()
+                    .isIndependent();
         }
     }
 }

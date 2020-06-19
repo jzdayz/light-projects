@@ -39,7 +39,8 @@ public class RpcRegister {
                     return false;
                 })
                 .collect(Collectors.toMap(Method::getName, Function.identity()));
-        RpcRegister.INSTANCE.providerContainer.put(id, RBean.builder().id(id).methods(maps).bean(object).build());
+        RpcRegister.INSTANCE.providerContainer
+                .put(id, RBean.builder().id(id).methods(maps).bean(object).build());
     }
 
     public Object registerConsume(Object object, String id) {
@@ -55,6 +56,7 @@ public class RpcRegister {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RBean {
+
         private String id;
         private Object bean;
         private Map<String, Method> methods;
